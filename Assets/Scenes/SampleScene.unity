@@ -212,7 +212,7 @@ GameObject:
   - component: {fileID: 153577448}
   - component: {fileID: 153577451}
   m_Layer: 5
-  m_Name: Button
+  m_Name: RewardButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -329,6 +329,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 634b3e02e815d49df9691e62821a21ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  reloadButton: {fileID: 1635720974}
 --- !u!1 &582255160
 GameObject:
   m_ObjectHideFlags: 0
@@ -776,7 +777,7 @@ GameObject:
   - component: {fileID: 1635720975}
   - component: {fileID: 1635720974}
   m_Layer: 5
-  m_Name: Button
+  m_Name: ReloadButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
