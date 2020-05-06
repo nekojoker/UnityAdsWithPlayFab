@@ -14,60 +14,51 @@ public class RewardedAdsButton : MonoBehaviour, IUnityAdsListener
 #endif
 
     [SerializeField] Button reloadButton;
-    Button myButton;
+    Button rewardButton;
     Text buttonText;
-    string myPlacementId = "rewardedVideo";
-    string placementName = "TestReward2";
 
     void Start()
     {
-        myButton = GetComponent<Button>();
+        rewardButton = GetComponent<Button>();
         buttonText = GetComponentInChildren<Text>();
 
         // Map the ShowRewardedVideo function to the button’s click listener:
-        if (myButton) myButton.onClick.AddListener(ShowRewardedVideo);
+        if (rewardButton) rewardButton.onClick.AddListener(ShowRewardedVideo);
         if (reloadButton) reloadButton.onClick.AddListener(PlayFabController_OnRewardFinished);
 
         // Initialize the Ads listener and service:
         Advertisement.AddListener(this);
         Advertisement.Initialize(gameId, true);
-
     }
 
     private void Update()
     {
-        // Set interactivity to be dependent on the Placement’s status:
-
         if (PlayFabController.PlacementViewsRemaining == null
             || PlayFabController.PlacementViewsResetMinutes == null
             || PlayFabController.PlacementViewsRemaining > 0
             || PlayFabController.PlacementViewsResetMinutes <= 0)
         {
             buttonText.text = "Get Reward!!";
-            myButton.interactable = Advertisement.IsReady(myPlacementId);
-
+            rewardButton.interactable = Advertisement.IsReady(Constants.REWARD_PLACEMENT_ID);
         }
         else
         {
             buttonText.text = string.Format("Next : {0} minutes", PlayFabController.PlacementViewsResetMinutes.ToString());
-            myButton.interactable = false;
+            rewardButton.interactable = false;
         }
     }
 
-    // Implement a function for showing a rewarded video ad:
+    // --------
+    // Implement
+    // --------
     void ShowRewardedVideo()
     {
-        Advertisement.Show(myPlacementId);
+        Advertisement.Show(Constants.REWARD_PLACEMENT_ID);
     }
 
     // Implement IUnityAdsListener interface methods:
     public void OnUnityAdsReady(string placementId)
     {
-        // If the ready Placement is rewarded, activate the button: 
-        if (placementId == myPlacementId)
-        {
-            myButton.interactable = true;
-        }
     }
 
     public void OnUnityAdsDidFinish(string placementId, ShowResult showResult)
@@ -104,16 +95,20 @@ public class RewardedAdsButton : MonoBehaviour, IUnityAdsListener
         PlayFabController.Instance.ReportAdActivity(AdActivity.Start);
     }
 
+
+    // --------
+    // Event
+    // --------
     private void PlayFabAuthService_OnLoginSuccess(LoginResult success)
     {
         Debug.Log("Login Success!!");
-        PlayFabController.Instance.GetAdPlacements(gameId, placementName);
+        PlayFabController.Instance.GetAdPlacements(gameId, Constants.REWARD_PLACEMENT_NAME);
     }
 
     private void PlayFabController_OnRewardFinished()
     {
         // Get the latest placement every time you reward
-        PlayFabController.Instance.GetAdPlacements(gameId, placementName);
+        PlayFabController.Instance.GetAdPlacements(gameId, Constants.REWARD_PLACEMENT_NAME);
     }
 
     private void OnEnable()

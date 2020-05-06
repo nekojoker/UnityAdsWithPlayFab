@@ -4,11 +4,17 @@ using UnityEngine;
 
 public class PlayFabController : MonoBehaviour
 {
+    // --------
+    // PlayFab
+    // --------
     public static string PlacementId { get; private set; } = "";
     public static string RewardId { get; private set; } = "";
     public static int? PlacementViewsRemaining { get; private set; } = null;
     public static double? PlacementViewsResetMinutes { get; private set; } = null;
 
+    // --------
+    // Event
+    // --------
     public delegate void RewardFinishedEvent();
     public static event RewardFinishedEvent OnRewardFinished;
 
@@ -27,6 +33,9 @@ public class PlayFabController : MonoBehaviour
 
     public void GetAdPlacements(string gameId, string placementName)
     {
+        // GetAdPlacements
+        // https://docs.microsoft.com/en-us/rest/api/playfab/client/advertising/getadplacements
+
         PlayFabClientAPI.GetAdPlacements(new GetAdPlacementsRequest { AppId = gameId }
         , result =>
         {
@@ -49,13 +58,14 @@ public class PlayFabController : MonoBehaviour
 
     public void ReportAdActivity(AdActivity activity)
     {
+        // ReportAdActivity
+        // https://docs.microsoft.com/en-us/rest/api/playfab/client/advertising/reportadactivity
+
         PlayFabClientAPI.ReportAdActivity(new ReportAdActivityRequest { PlacementId = PlacementId, RewardId = RewardId, Activity = activity }
         , result =>
         {
             if (activity == AdActivity.End)
-            {
                 RewardAdActivity();
-            }
         }, error =>
         {
             Debug.Log(error.GenerateErrorReport());
@@ -64,6 +74,9 @@ public class PlayFabController : MonoBehaviour
 
     public void RewardAdActivity()
     {
+        // RewardAdActivity
+        // https://docs.microsoft.com/en-us/rest/api/playfab/client/advertising/rewardadactivity
+
         PlayFabClientAPI.RewardAdActivity(new RewardAdActivityRequest { PlacementId = PlacementId, RewardId = RewardId }
         , result =>
         {
@@ -72,9 +85,8 @@ public class PlayFabController : MonoBehaviour
         }, error =>
         {
             if (error.Error == PlayFabErrorCode.AllAdPlacementViewsAlreadyConsumed)
-            {
                 Debug.Log("Run GetAdPlacements again.");
-            }
+
             Debug.Log(error.GenerateErrorReport());
         });
     }
